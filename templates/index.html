@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vagas Daniel</title>
+<style>
+body { font-family: Arial; background:#111; color:white; padding:20px; }
+input, select, button { padding:10px; margin:5px; }
+.vaga { background:#222; margin:10px; padding:10px; border-radius:10px; }
+</style>
+</head>
+<body>
+
+<h1>Vagas Daniel</h1>
+
+<input id="q" placeholder="Digite a vaga">
+<select id="h">
+<option value="12">12h</option>
+<option value="24">24h</option>
+</select>
+
+<button onclick="buscar()">Buscar</button>
+
+<div id="res"></div>
+
+<script>
+async function buscar(){
+ const r = await fetch("/buscar", {
+ method:"POST",
+ headers:{ "Content-Type":"application/json" },
+ body: JSON.stringify({
+ query: document.getElementById("q").value,
+ horas: document.getElementById("h").value
+ })
+ });
+
+ const data = await r.json();
+
+ const el = document.getElementById("res");
+ el.innerHTML = "";
+
+ data.forEach(v=>{
+ const d = document.createElement("div");
+ d.className = "vaga";
+ d.innerHTML = `<b>${v.titulo}</b><br>${v.empresa}<br><a href="${v.link}" target="_blank">Abrir</a>`;
+ el.appendChild(d);
+ });
+}
+</script>
+
+</body>
+</html>
