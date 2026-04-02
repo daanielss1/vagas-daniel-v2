@@ -1,0 +1,59 @@
+body {
+    background: #0b0b0f;
+    color: white;
+    font-family: Arial;
+    margin: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #ff3c78;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input, select {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    padding: 10px 15px;
+    background: #ff3c78;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.tabs {
+    text-align: center;
+    margin: 20px;
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.card {
+    background: #161622;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+}

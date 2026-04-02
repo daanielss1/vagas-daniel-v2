@@ -1,50 +1,91 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Vagas Daniel</title>
-<style>
-body { font-family: Arial; background:#111; color:white; padding:20px; }
-input, select, button { padding:10px; margin:5px; }
-.vaga { background:#222; margin:10px; padding:10px; border-radius:10px; }
-</style>
+    <title>Vagas Daniel</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-<h1>Vagas Daniel</h1>
+<div class="container">
 
-<input id="q" placeholder="Digite a vaga">
-<select id="h">
-<option value="12">12h</option>
-<option value="24">24h</option>
-</select>
+    <h1>🎸 Vagas Daniel</h1>
 
-<button onclick="buscar()">Buscar</button>
+    <div class="search-box">
+        <input id="query" placeholder="Digite sua vaga (ex: product owner)">
+        
+        <select id="horas">
+            <option value="12">Últimas 12h</option>
+            <option value="24">Últimas 24h</option>
+        </select>
 
-<div id="res"></div>
+        <button onclick="buscar()">Buscar</button>
+    </div>
+
+    <div class="tabs">
+        <button onclick="showTab('vagas')">Vagas</button>
+        <button onclick="showTab('aplicadas')">Vagas Aplicadas</button>
+    </div>
+
+    <div id="vagas" class="tab-content"></div>
+    <div id="aplicadas" class="tab-content hidden"></div>
+
+</div>
 
 <script>
+let aplicadas = [];
+
+function showTab(tab){
+    document.getElementById("vagas").classList.add("hidden");
+    document.getElementById("aplicadas").classList.add("hidden");
+
+    document.getElementById(tab).classList.remove("hidden");
+}
+
 async function buscar(){
- const r = await fetch("/buscar", {
- method:"POST",
- headers:{ "Content-Type":"application/json" },
- body: JSON.stringify({
- query: document.getElementById("q").value,
- horas: document.getElementById("h").value
- })
- });
+    const query = document.getElementById("query").value;
+    const horas = document.getElementById("horas").value;
 
- const data = await r.json();
+    const res = await fetch("/buscar", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ query, horas })
+    });
 
- const el = document.getElementById("res");
- el.innerHTML = "";
+    const data = await res.json();
 
- data.forEach(v=>{
- const d = document.createElement("div");
- d.className = "vaga";
- d.innerHTML = `<b>${v.titulo}</b><br>${v.empresa}<br><a href="${v.link}" target="_blank">Abrir</a>`;
- el.appendChild(d);
- });
+    const container = document.getElementById("vagas");
+    container.innerHTML = "";
+
+    data.forEach((v, i) => {
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <h3>${v.titulo}</h3>
+            <p>${v.empresa}</p>
+            <small>${v.data}</small><br>
+            <a href="${v.link}" target="_blank">Abrir vaga</a><br>
+            <button onclick='aplicar(${JSON.stringify(v)})'>Já apliquei</button>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function aplicar(vaga){
+    aplicadas.push(vaga);
+
+    const container = document.getElementById("aplicadas");
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+        <h3>${vaga.titulo}</h3>
+        <p>${vaga.empresa}</p>
+        <a href="${vaga.link}" target="_blank">Abrir vaga</a>
+    `;
+
+    container.appendChild(div);
 }
 </script>
 
